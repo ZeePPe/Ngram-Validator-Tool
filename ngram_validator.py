@@ -73,7 +73,7 @@ class Validator(Widget):
     def update(self, box):
         self.current_box = box
         img_path = os.path.join(IMAGE_FOLDER, box.word_file)
-        word_transcript = box.word_file.split(".")[0]
+        word_transcript = box.word_file.split(".")[0].split("_")[-1]
         img = Image.open(img_path)
         # BOX PAROLA
         self.ngram_image.x = self.center_x - round(img.width/2)
@@ -113,19 +113,23 @@ class Validator(Widget):
         #print(keycode)
         
         if len(modifiers) > 0 and modifiers[0] == 'ctrl'  and keycode[1] == 'right':  # Ctrl+up
-            self.box_selector_1.width += 1
-            print("ctr+r")
-        elif len(modifiers) > 0 and modifiers[0] == 'ctrl'  and keycode[1] == 'left':
-            self.box_selector_1.width -= 1
-            print("ctr+l")
-        elif keycode[1] == 'right':
             self.box_selector_2.width += 1
             self.current_box.x1 += 1
             self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
-            print("r")
-        elif keycode[1] == 'left':
+            print("ctr+r")
+        elif len(modifiers) > 0 and modifiers[0] == 'ctrl'  and keycode[1] == 'left':
             self.box_selector_2.width -= 1
             self.current_box.x1 -= 1
+            self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
+            print("ctr+l")
+        elif keycode[1] == 'right':
+            self.box_selector_1.width += 1
+            self.current_box.x2 += 1
+            self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
+            print("r")
+        elif keycode[1] == 'left':
+            self.box_selector_1.width -= 1
+            self.current_box.x2 -= 1
             self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
             print("l")
         elif keycode[1] == 'spacebar':

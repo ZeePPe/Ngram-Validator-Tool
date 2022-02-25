@@ -87,14 +87,14 @@
         # label dell ngramma
         font_size: 70  
         center_x: root.width / 2
-        center_y: root.center_y + 100
+        center_y: root.center_y + (image_ngram.height /2) + 50
         text: str(root.ngram_image.ngram_label)
     
     Label:
         # label della parola
         font_size: 50  
         center_x: root.width / 2
-        center_y: root.center_y - 100
+        center_y: root.center_y - (image_ngram.height /2) - 50
         text: str(root.ngram_image.word_label)
     Label:
         # label delle coordinate

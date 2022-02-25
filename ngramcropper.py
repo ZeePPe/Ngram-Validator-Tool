@@ -33,7 +33,7 @@ class NgramCropper():
         for image_name in os.listdir(self.word_folder_path):
             image = Image.open(os.path.join(self.word_folder_path, image_name))
             
-            word = image_name.split(".")[0]
+            word = image_name.split(".")[0].split("_")[-1]
             n_characters = len(word)
             
             char_width  = round(image.width / n_characters)
