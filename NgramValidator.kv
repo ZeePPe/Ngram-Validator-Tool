@@ -1,0 +1,155 @@
+#:kivy 2.0.0
+
+<ActionBar>:
+    size: self.size
+    background_color: 0.2,0.5,1,1   
+        
+            
+<BoxSelector>:
+    size: 0, 0
+    canvas:
+        Color:
+            rgba: 1,0,0,0.5
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        
+
+<WordImage>:
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: str(root.image_source)
+
+           
+
+<Validator>:
+    box_selector_1: selector_left
+    box_selector_2: selector_right
+    ngram_image: image_ngram
+    btn_load_ngram: btn_load_ngram_id
+    btn_save_ngram: btn_save_ngram_id
+    btn_compute_ngram: btn_compute_ngram_id
+
+    ActionBar:
+        id: action_bar
+        pos: 0, root.top - self.height
+        size: root.width, 50
+        ActionView:
+            use_separator: True
+            ActionPrevious:
+                title: 'Ngram Validator'
+                with_previous: False           
+            ActionButton:
+                id: btn_load_ngram_id
+                text: 'Carica Ngrammi'
+                #on_release: print("ahhh")
+                #icon: 'atlas://data/images/defaulttheme/filechooser_file'
+            ActionButton:
+                id: btn_compute_ngram_id
+                text: 'Calcola Ngrammi'
+            ActionButton:
+                id: btn_save_ngram_id
+                text: 'Salva Ngrammi'
+                #icon: 'atlas://data/images/defaulttheme/filechooser_file'       
+            ActionGroup:
+                id: App_ActionGroup
+                mode: 'spinner'
+                text: 'File'
+                ActionButton:
+                    text: 'Settings'
+                    on_press: app.open_settings()
+                ActionButton:
+                    text: 'Close (x)'
+                    icon: 'atlas://data/images/defaulttheme/close'
+                    on_press: app.stop()
+
+    WordImage:
+        id: image_ngram
+        size: 0,50
+        pos: root.center_x, root.center_y
+        source: str(root.ngram_image.image_source)
+        #source: "imgs/consigned.png"
+    
+    BoxSelector:
+        id: selector_left
+        x: 10
+        center_y: root.center_y
+    
+    BoxSelector:
+        id: selector_right
+        x: 10
+        center_y: root.center_y
+            
+            
+    Label:
+        # label dell ngramma
+        font_size: 70  
+        center_x: root.width / 2
+        center_y: root.center_y + 100
+        text: str(root.ngram_image.ngram_label)
+    
+    Label:
+        # label della parola
+        font_size: 50  
+        center_x: root.width / 2
+        center_y: root.center_y - 100
+        text: str(root.ngram_image.word_label)
+    Label:
+        # label delle coordinate
+        font_size: 12  
+        center_x: root.width / 2
+        center_y: root.center_y - (image_ngram.height /2) - 10
+        text: str(root.ngram_image.coordinate)
+    
+    Label:
+        font_size: 12
+        center_x: root.width / 2
+        center_y: root.center_y - 200
+        text: "Con SPAZIO carichi l'ngramma successivo, cone backspace torni al ngramma precedente\nLe frecce destra e sinistra controllano il cutter di sinistra, mentre le frecce +Ctrl\ncontrollano il cutter di destra."
+    
+    Label:
+        font_size: 12
+        #pos_hint: {"x":0.5, "top":1}
+        x: -5
+        y: -30
+        text: str(root.ngram_image.curr_ngram_index) + "/" + str(root.num_of_ngrams) + " ngram"
+
+
+#------------------------------------------------
+#Popup windows ----------------------------------
+#------------------------------------------------
+<PopupMessage>:
+    Button:
+        text: "OK"
+        size_hint: 0.8, 0.5
+        pos_hint: {"x":0.1, "y":0.1}
+        on_release: print("Chiuti il popup")
+
+<NgramComputPopup>:
+    textinput_len_ngram: textinput_len_ngram_id
+
+    Label:
+        text: "N:"
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":1}
+
+    TextInput:
+        id: textinput_len_ngram_id
+        size_hint: 0.8, 0.1
+        pos_hint: {"x":0.1, "y":0.5}
+        input_filter: 'int'
+        text: "0"
+
+    Button:
+        text: "Cancella Ngrammi"
+        size_hint: 0.35, 0.1
+        pos_hint: {"x":0.1, "y":0.1}
+        on_release: root.callback_delete_button()
+
+    Button:
+        text: "OK"
+        size_hint: 0.35, 0.1
+        pos_hint: {"x":0.55, "y":0.1}
+        on_release: root.callback_ok_button()
