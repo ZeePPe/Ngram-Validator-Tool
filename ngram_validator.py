@@ -64,7 +64,7 @@ class Validator(Widget):
 
         #self.show_popuo = PopupMessage()
         self.popupMessage = Popup(title="Wind", content=PopupMessage(), size_hint=(None,None), size=(400,100))
-        self.pupop_ngram_computation = Popup(title="Ngram Computation", content=NgramComputPopup(self.cropper),size_hint=(None,None), size=(400, 400))
+        self.pupop_ngram_computation = Popup(title="Ngram Computation", content=NgramComputPopup(self.cropper),size_hint=(None,None), size=(400, 400), auto_dismiss = True)
         
     
     '''
@@ -151,6 +151,13 @@ class Validator(Widget):
                     self.cropper.save_ngramlist(OUT_FILE)
             prev_box = self.cropper.prev_box()
             self.update(prev_box)
+        elif keycode[1] == 'delete':
+            # delete ngram:
+             if self.current_box is not None:
+                if self.current_box.x1 is not None:
+                    self.cropper.delete_current_box()
+                    self.cropper.save_ngramlist(OUT_FILE)
+                    self.update(self.cropper.get_current_box())
             
         return True 
 
@@ -178,8 +185,7 @@ class Validator(Widget):
             pass
         elif click_mode == "normal":
             self.pupop_ngram_computation.open()
-            #self.popupMessage.title=f"Ngrammi generati!'"
-            #self.popupMessage.open()
+            #self.pupop_ngram_computation.dismiss()
             
     def callback_button_save_ngram(self, button, click_mode):
         if click_mode == "down":
@@ -197,7 +203,8 @@ class Validator(Widget):
 Popup Message
 '''
 class PopupMessage(FloatLayout):
-    pass
+    def callback_ok_button(self):
+        self.dismiss() # questa classe è solo il layout del popup, non posso richiamare dismiss che è di popup!
 
 '''
 Popup window for the ngram computation setting
@@ -235,13 +242,3 @@ class NgramValidatorApp(App):
 if __name__ == '__main__':
     NgramValidatorApp().run()
 
-# serve una nuova classe NgramCropper
-# crea un oggetto che crea il file di segmentazione.
-# cerca di farlo simile a quello di Moha
-# path/img, x1,y1,x2,y2,CLASS
-
-# All'avvio del programma costruisce il file degli Ngrammi in base al num di lettere
-# una volta fatto l'interfaccia mostra tutti gli ngrammi e aggiorna il file
-# meglio, mantiene una rapp interna e aggiorna il gfile quando salvo
-# se premo spazio si passa al prossimo ngramma
-# se premo esc si cancella l'ngramma

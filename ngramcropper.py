@@ -35,7 +35,9 @@ class NgramCropper():
             
             word = image_name.split(".")[0].split("_")[-1]
             n_characters = len(word)
-            
+            if n_characters == 0:
+                continue
+           
             char_width  = round(image.width / n_characters)
             ngram_width = math.ceil(char_width*ngram_size)
 
@@ -68,6 +70,14 @@ class NgramCropper():
     '''
     def update_box(self, new_box, index):
         self.all_ngrams[index] = new_box
+    
+    '''
+    Delete a box
+    '''
+    def delete_current_box(self):
+        self.all_ngrams.pop(self.current_index)
+        if self.current_index + 1 > len(self.all_ngrams):
+            self.current_index  -= 1
 
     '''
     Get next ngram box
@@ -105,6 +115,12 @@ class NgramCropper():
         return next_box
 
     '''
+    Get the current box
+    '''
+    def get_current_box(self):
+        return self.all_ngrams[self.current_index]
+
+    '''
     Get the index of current box
     '''
     def get_current_index(self):
@@ -126,11 +142,13 @@ class NgramCropper():
             word_image = Image.open(os.path.join(self.word_folder_path, box.word_file))
             ngram_image = word_image.crop((int(box.x1), int(box.y1), int(box.x2), int(box.y2)))
 
+            head_name = box.word_file.split("_")
+            head_name = head_name[0] + "_" + head_name[1] + "_"
             ngram_index = 0
-            ngram_file_path = os.path.join(ngrams_folder_path, str(ngram_index)+"_"+box.ngram_class + extension)
+            ngram_file_path = os.path.join(ngrams_folder_path, head_name+str(ngram_index)+"_"+box.ngram_class + extension)
             while os.path.isfile(ngram_file_path):
                  ngram_index += 1
-                 ngram_file_path = os.path.join(ngrams_folder_path, str(ngram_index)+"_"+box.ngram_class + extension)
+                 ngram_file_path = os.path.join(ngrams_folder_path, head_name+str(ngram_index)+"_"+box.ngram_class + extension)
             
             ngram_image.save(ngram_file_path)
 

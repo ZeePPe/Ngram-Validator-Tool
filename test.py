@@ -1,7 +1,7 @@
 from ngramcropper import NgramCropper
 
-image_folder = "validator\imgs"
-ngram_image_folder = "validator\\ngrams"
+image_folder = "words"
+ngram_image_folder = "ngrams"
 out_file = "ngram_list.ngl"
 #cropper = NgramCropper(image_folder)
 cropper = NgramCropper(image_folder, ngram_file=out_file)
@@ -22,11 +22,12 @@ print(cropper.next_box())
 print("\nIl terzo elemento è:")
 print(cropper.next_box())
 
+cropper.delete_current_box()
 
 # save ngram file
 cropper.save_ngramlist(out_file)
 
 # save all ngram images
-cropper.build_ngram_images(ngram_image_folder)
+#cropper.build_ngram_images(ngram_image_folder)
 
 print("-------------\nDone")

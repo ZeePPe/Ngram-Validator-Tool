@@ -120,12 +120,12 @@
 #------------------------------------------------
 #Popup windows ----------------------------------
 #------------------------------------------------
-<PopupMessage>:
+<PopupMessage@Popup>:
     Button:
         text: "OK"
         size_hint: 0.8, 0.5
         pos_hint: {"x":0.1, "y":0.1}
-        on_release: print("Chiuti il popup")
+        #on_release: root.dismiss() # è un metodo di Popup.. forse devo modificare un po' la struttra dei popup
 
 <NgramComputPopup>:
     textinput_len_ngram: textinput_len_ngram_id
