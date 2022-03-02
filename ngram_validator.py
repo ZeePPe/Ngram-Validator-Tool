@@ -123,26 +123,32 @@ class Validator(Widget):
         #print(modifiers)
         #print(keycode)
         
-        if len(modifiers) > 0 and modifiers[0] == 'ctrl'  and keycode[1] == 'right':  # Ctrl+up
-            self.box_selector_2.width += 1
-            self.current_box.x1 += 1
-            self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
-            print("ctr+r")
+        if len(modifiers) > 0 and modifiers[0] == 'ctrl'  and keycode[1] == 'right':
+            if self.box_selector_2.width < self.ngram_image.width:
+                self.box_selector_2.width += 1
+                self.current_box.x1 += 1
+                if self.current_box.x1 == self.current_box.x2:
+                    self.box_selector_1.width += 1
+                    self.current_box.x2 += 1
+                self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
         elif len(modifiers) > 0 and modifiers[0] == 'ctrl'  and keycode[1] == 'left':
-            self.box_selector_2.width -= 1
-            self.current_box.x1 -= 1
-            self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
-            print("ctr+l")
+            if self.box_selector_2.width > 0:
+                self.box_selector_2.width -= 1
+                self.current_box.x1 -= 1
+                self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
         elif keycode[1] == 'right':
-            self.box_selector_1.width += 1
-            self.current_box.x2 += 1
-            self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
-            print("r")
+            if self.box_selector_1.width < 0:
+                self.box_selector_1.width += 1
+                self.current_box.x2 += 1
+                self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
         elif keycode[1] == 'left':
-            self.box_selector_1.width -= 1
-            self.current_box.x2 -= 1
-            self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
-            print("l")
+            if self.box_selector_1.width > - self.ngram_image.width:
+                self.box_selector_1.width -= 1
+                self.current_box.x2 -= 1
+                if self.current_box.x1 == self.current_box.x2:
+                    self.box_selector_2.width -= 1
+                    self.current_box.x1 -= 1
+                self.ngram_image.coordinate = f"(x1:{self.current_box.x1}, x2:{self.current_box.x2})"
         elif keycode[1] == 'spacebar':
             # next ngram
             print(self.current_box)
