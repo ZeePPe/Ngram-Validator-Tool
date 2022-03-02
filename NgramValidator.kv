@@ -58,6 +58,9 @@
                 mode: 'spinner'
                 text: 'File'
                 ActionButton:
+                    text: 'Ricomincia'
+                    on_press: root.cropper.set_current_index(0);root.update(root.cropper.get_current_box())
+                ActionButton:
                     text: 'Settings'
                     on_press: app.open_settings()
                 ActionButton:

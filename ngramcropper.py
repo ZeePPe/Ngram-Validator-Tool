@@ -127,6 +127,12 @@ class NgramCropper():
         return self.current_index
 
     '''
+    Set the index of current box
+    '''
+    def set_current_index(self, current_index=0):
+        self.current_index = current_index
+
+    '''
     Get the number of ngrams
     '''
     def get_nuber_ngram(self):

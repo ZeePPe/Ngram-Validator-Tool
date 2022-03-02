@@ -1,3 +1,4 @@
+from multiprocessing.dummy import current_process
 from operator import mod
 import os
 from kivy.app import App
@@ -13,12 +14,15 @@ from PIL import Image
 IMAGE_FOLDER = "words"
 NGRAM_FOLDER = "ngrams" 
 OUT_FILE = "ngram_list.ngl"
+INDEX_FILE = "current_index"
+
 
 """
 Class for selection Boxes
 """
 class BoxSelector(Widget):
     position = NumericProperty(0)
+
 
 """
 Class for word image
@@ -29,7 +33,6 @@ class WordImage(Widget):
     ngram_label = StringProperty('')
     coordinate = StringProperty('')
     curr_ngram_index = StringProperty('0')
-
 
 
 """
@@ -55,7 +58,7 @@ class Validator(Widget):
 
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        self.ngram_image.word_label = "Premi SPAZIO per iniziare"
+        self.ngram_image.word_label = "Benvenuto nel Tool di \nValidazione N-grams"
         self.box_selector_1.width=0
         self.box_selector_2.width=0
         self.btn_load_ngram.bind(state=self.callback_button_load_ngram)
@@ -87,6 +90,15 @@ class Validator(Widget):
 
         # Current Index
         self.ngram_image.curr_ngram_index = str(self.cropper.get_current_index()+1)
+        self.num_of_ngrams = self.cropper.get_nuber_ngram()
+
+        with open(INDEX_FILE, "w") as file_index:
+            current_index = self.cropper.get_current_index()
+            if current_index < 0:
+                current_index = 0
+            elif current_index > self.cropper.get_nuber_ngram()-1:
+                current_index = self.cropper.get_nuber_ngram()-1
+            file_index.write(str(current_index))
 
         #BOX DI SELEZIONE
         if box.x1 is not None:
@@ -98,7 +110,6 @@ class Validator(Widget):
             self.box_selector_2.width = box.x1
             self.box_selector_1.x = self.center_x + round(img.width/2) +1
             self.box_selector_2.x = self.center_x - round(img.width/2)
-
 
 
     def _keyboard_closed(self):
@@ -139,9 +150,8 @@ class Validator(Widget):
                 if self.current_box.x1 is not None:
                     self.cropper.update_current_box(self.current_box)
                     self.cropper.save_ngramlist(OUT_FILE)
-            next_box = self.cropper.next_box()
-            
-            self.update(next_box)
+                next_box = self.cropper.next_box()
+                self.update(next_box)
         elif keycode[1] == 'backspace':
             # prev ngram
             print(self.current_box)
@@ -149,8 +159,8 @@ class Validator(Widget):
                 if self.current_box.x1 is not None:
                     self.cropper.update_current_box(self.current_box)
                     self.cropper.save_ngramlist(OUT_FILE)
-            prev_box = self.cropper.prev_box()
-            self.update(prev_box)
+                prev_box = self.cropper.prev_box()
+                self.update(prev_box)
         elif keycode[1] == 'delete':
             # delete ngram:
              if self.current_box is not None:
@@ -171,11 +181,15 @@ class Validator(Widget):
             pass
         elif click_mode == "normal":
             # on release
+            index_file = open(INDEX_FILE, "r")
+            current_index = int(index_file.readline())
+            index_file.close()
+            self.cropper.set_current_index(current_index)
             if self.cropper.get_nuber_ngram() > 0:
-                if self.current_box is not None: 
-                    if self.current_box.x1 is not None:
-                        self.cropper.update_current_box(self.current_box)
-                next_box = self.cropper.next_box()
+                #if self.current_box is not None: 
+                #    if self.current_box.x1 is not None:
+                #        self.cropper.update_current_box(self.current_box)
+                next_box = self.cropper.get_current_box()
                 self.curr_ngram_inxex = self.cropper.get_current_index()+1
                 self.num_of_ngrams = self.cropper.get_nuber_ngram()
                 self.update(next_box)
